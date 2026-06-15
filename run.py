@@ -158,10 +158,10 @@ def run_create_arguments_file(project_dir, main_script, config_file, args: list[
 def run_docker(project_dir, data_dir, main_script, config_file) -> bool:
     image = "claudioschi21/thesis_alcor_cuda11.8:latest"
     cmd = [
-        "podman", "run",
+        "docker", "run", "--rm",
         "-v", f"{project_dir}:/work/project",
         "-v", f"{data_dir}:/work/data",
-        "--device", "nvidia.com/gpu=all",
+        "--gpus", "all",
         "--ipc", "host",
         image,
         "/usr/bin/python3", "-u",
@@ -169,12 +169,12 @@ def run_docker(project_dir, data_dir, main_script, config_file) -> bool:
         config_file
     ]
     print("--------------")
-    print_log(f"Running Podman: {' '.join(cmd)}")
+    print_log(f"Running Docker: {' '.join(cmd)}")
     result = subprocess.run(cmd)
     if result.returncode != 0:
-        print_error("Podman execution failed.")
+        print_error("Docker execution failed.")
         return False
-    print_success("Podman completed successfully.")
+    print_success("Docker completed successfully.")
     return True
 
 def clean_configs_dir(configs_dir):
