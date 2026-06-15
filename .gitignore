@@ -1,0 +1,19 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.ipynb_checkpoints/
+
+# Runtime / cache
+last_config.json
+fontlist-v330.json
+.DS_Store
+
+# Model weights & generated datasets (usually too large for git)
+*.pth
+*.pt
+*.ckpt
+
+# Uncomment if you do NOT want generated outputs in the repo:
+# plots/
+# results/

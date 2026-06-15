@@ -1,0 +1,15 @@
+{
+  "dataset": "cifar10",
+  "method": "fast",
+  "method_str": "_add_ood_0.3",
+  "teacher": "vgg11",
+  "student": "resnet18",
+  "accuracy": 0.9036,
+  "lr_G": 0.001,
+  "train_time_sec": 4505.11,
+  "train_time": "01:15:05",
+  "memory_usage": "1261.02M",
+  "oh": 0.6,
+  "adv": 2.0,
+  "feat": 10.0
+}

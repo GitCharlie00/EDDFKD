@@ -1,0 +1,43 @@
+--mode dfkd
+--gpu_id 3
+
+--dataset cifar10
+--dataset_root /work/data/ssd_datasets/
+--num_classes 10
+--num_workers 8
+
+--save_path /work/data/ssd_results/
+--log_interval 10
+
+--t_network wrn-40-2
+--s_network s_wrn-16-2
+
+--approach generative
+--method dafl
+--confounder_size 8
+--hidden_dim 256 
+--ood_loss 
+--additive_loss 
+--gamma_ood 0.1
+--gamma_adaptive none
+--new_gamma_ood 0.0
+--in_energy_target -23.0
+--out_energy_target -5.0
+
+--z_dim 1000
+--lr_G 0.002
+--lr_S 0.1
+--temperature 20.0
+--oh 1.0
+--act 0.001
+--ie 20.0
+--dataset_size 50000
+--feature_extr 
+
+--train_batch_size 1024
+--test_batch_size 1024
+--epochs 2000
+--kd_steps 1
+--ep_steps 120
+--g_steps 1
+--suffix hinge_w402_w162

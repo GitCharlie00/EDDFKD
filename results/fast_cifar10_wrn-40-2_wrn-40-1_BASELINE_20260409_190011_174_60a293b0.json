@@ -1,0 +1,15 @@
+{
+  "dataset": "cifar10",
+  "method": "fast",
+  "method_str": "_BASELINE",
+  "teacher": "wrn-40-2",
+  "student": "wrn-40-1",
+  "accuracy": 0.9246,
+  "lr_G": 0.002,
+  "oh": 0.4,
+  "act": 0.1,
+  "ie": 5.0,
+  "train_time_sec": 4489.08,
+  "train_time": "01:14:49",
+  "memory_usage": "2528.08M"
+}
