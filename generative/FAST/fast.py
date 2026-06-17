@@ -10,7 +10,7 @@ from time import time
 from kornia import augmentation
 
 from generative.FAST.hooks import DeepInversionHook
-from generative.loss import KLDiv, kl_loss, energy_kd_weights, weighted_kl
+from generative.loss import KLDiv, kl_loss, energy_kd_weights, weighted_kl, energy_adaptive_kl
 from generative.utils_gen import Normalizer, dummy_ctx, get_confounder_dict
 from generative.FAST.fast_utils import ImagePool, DataIter, reset_l0, reptile_grad
 
@@ -86,6 +86,11 @@ class FAST():
         # Energy-weighted KD (reliability reweighting at distillation time)
         self.energy_kd = args.energy_kd
         self.energy_kd_beta = args.energy_kd_beta
+
+        # Energy-adaptive distillation temperature
+        self.energy_temp = args.energy_temp
+        self.energy_temp_base = args.energy_temp_base
+        self.energy_temp_alpha = args.energy_temp_alpha
 
         # Process various
         self.log_interval = args.log_interval
@@ -314,7 +319,11 @@ class FAST():
                 self._energy_matching(s_energy,t_energy)
 
             # Student loss
-            if self.energy_kd:
+            if self.energy_temp:
+                loss_S = energy_adaptive_kl(s_out, t_out.detach(),
+                                            tau_base=self.energy_temp_base,
+                                            alpha=self.energy_temp_alpha)
+            elif self.energy_kd:
                 w = energy_kd_weights(t_out.detach(), beta=self.energy_kd_beta, T=self.temperature)
                 loss_S = weighted_kl(s_out, t_out.detach(), weights=w, T=self.temperature)
             else:

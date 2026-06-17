@@ -181,6 +181,9 @@ def init_arg_parser():
     parser.add_argument('--s_energy_match',                help="T-S match",    action='store_true')
     parser.add_argument('--energy_kd',                     help="Energy-weighted KD on/off", action='store_true')
     parser.add_argument('--energy_kd_beta',   type=float,  help="Energy-KD gate sharpness",  default=1.0)
+    parser.add_argument('--energy_temp',                   help="Energy-adaptive KD temperature on/off", action='store_true')
+    parser.add_argument('--energy_temp_base', type=float,  help="Base KD temperature tau_0", default=4.0)
+    parser.add_argument('--energy_temp_alpha',type=float,  help="Energy-adaptive temp strength (0=global T)", default=1.0)
 
     # Training initialization
     parser.add_argument("--lr",               type=float,  help="Learning rate",   default=0.001)
@@ -361,6 +364,9 @@ def approach_label(args):
 
     if getattr(args, "energy_kd", False):
         parts.append("ekd")
+
+    if getattr(args, "energy_temp", False):
+        parts.append("etemp")
 
     # if args.g_reset:
         # parts.append("g_reset")

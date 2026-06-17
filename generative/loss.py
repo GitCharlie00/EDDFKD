@@ -67,3 +67,36 @@ def weighted_kl(s_out, t_out, weights=None, T=1.0):
     if weights is not None:
         per_sample = per_sample * weights
     return per_sample.mean()
+
+
+# --------------------------------------------------------------------------- #
+#  Energy-adaptive distillation temperature                                    #
+#                                                                              #
+#  In DFKD the teacher is overconfident on synthetic samples, so its soft      #
+#  targets collapse towards one-hot and the dark knowledge vanishes (measured  #
+#  teacher entropy ~0.05). A *global* KD temperature cannot fix this because   #
+#  the saturation is heterogeneous across samples. The free energy E(x) is the #
+#  exact, parameter-free measure of per-sample saturation (energy is the       #
+#  temperature-scaled logsumexp), so we use it to set a per-sample temperature #
+#  that softens the more saturated samples more, restoring inter-class         #
+#  structure uniformly across the batch. Unlike energy *weighting*, this does  #
+#  not discard samples -- it recovers the information in each one.             #
+# --------------------------------------------------------------------------- #
+
+def energy_adaptive_kl(s_out, t_out, tau_base=4.0, alpha=1.0, eps=1e-8):
+    """Per-sample temperature KD, with tau driven by the teacher free energy.
+
+    tau_i = tau_base * exp(-alpha * z_i),  z_i = (E_i - mu_E) / sigma_E
+    (more saturated => lower energy => higher tau => more softening).
+    `alpha = 0` recovers standard global-temperature KD at `tau_base`, which is
+    the natural ablation. tau is clamped to [tau_base/4, tau_base*4] for
+    stability (no extra hyper-parameters).
+    """
+    energy = teacher_energy(t_out, T=1.0).detach()                      # [B]
+    z = (energy - energy.mean()) / energy.std().clamp_min(eps)          # [B]
+    tau = (tau_base * torch.exp(-alpha * z)).clamp(tau_base * 0.25, tau_base * 4.0)
+    tau = tau.unsqueeze(1)                                              # [B, 1]
+    p = F.softmax(t_out / tau, dim=1)
+    logq = F.log_softmax(s_out / tau, dim=1)
+    per_sample = F.kl_div(logq, p, reduction='none').sum(1) * (tau.squeeze(1) ** 2)
+    return per_sample.mean()

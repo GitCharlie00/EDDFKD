@@ -282,6 +282,7 @@ def main():
             use_kdci  = prompt_yes_no("Do you want to integrate KDCI?")
             use_ood   = prompt_yes_no("Do you want to integrate OOD loss?")
             use_energy_kd = prompt_yes_no("Do you want energy-weighted KD?")
+            use_energy_temp = prompt_yes_no("Do you want energy-adaptive KD temperature?")
             if task == "plot":
                 calc_target = prompt_yes_no("Do you want to compute energy target?")
 
@@ -307,6 +308,7 @@ def main():
                 "--kdci", "true" if use_kdci else "false",
                 "--ood_loss", "true" if use_ood else "false",
                 "--energy_kd", "true" if use_energy_kd else "false",
+                "--energy_temp", "true" if use_energy_temp else "false",
                 "--gamma_adaptive", gamma_adaptive,
                 "--new_gamma_ood", new_gamma_ood,
                 "--g_reset", "true" if g_reset else "false",
@@ -378,6 +380,8 @@ def main():
                 parts.append("kdci")
             if use_energy_kd:
                 parts.append("ekd")
+            if use_energy_temp:
+                parts.append("etemp")
             if g_reset:
                 parts.append("g_reset")
             if g_penality:

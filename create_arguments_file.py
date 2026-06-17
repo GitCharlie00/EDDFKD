@@ -200,6 +200,25 @@ def main():
     )
 
     parser.add_argument(
+        "--energy_temp",
+        type=str,
+        choices=["true", "false"],
+        help="Integrate energy-adaptive KD temperature? Set to 'true' or 'false'."
+    )
+
+    parser.add_argument(
+        "--energy_temp_base",
+        type=float,
+        help="Base KD temperature tau_0 (default 4.0)"
+    )
+
+    parser.add_argument(
+        "--energy_temp_alpha",
+        type=float,
+        help="Energy-adaptive temperature strength (0 = global T)"
+    )
+
+    parser.add_argument(
         "--gpu_id",
         type=int,
         help="GPU index"
@@ -567,6 +586,9 @@ def main():
                     f"--out_energy_target {out_energy_target}\n",
                     f"--energy_kd \n" if (args.energy_kd and args.energy_kd.lower() == "true") else "",
                     f"--energy_kd_beta {args.energy_kd_beta}\n" if args.energy_kd_beta else "",
+                    f"--energy_temp \n" if (args.energy_temp and args.energy_temp.lower() == "true") else "",
+                    f"--energy_temp_base {args.energy_temp_base}\n" if args.energy_temp_base else "",
+                    f"--energy_temp_alpha {args.energy_temp_alpha}\n" if args.energy_temp_alpha is not None else "",
                     "\n",
                     f"--z_dim {z_dim}\n",
                     f"--lr_G {lr_G}\n",
@@ -615,6 +637,9 @@ def main():
                     f"--out_energy_target {out_energy_target}\n",
                     f"--energy_kd \n" if (args.energy_kd and args.energy_kd.lower() == "true") else "",
                     f"--energy_kd_beta {args.energy_kd_beta}\n" if args.energy_kd_beta else "",
+                    f"--energy_temp \n" if (args.energy_temp and args.energy_temp.lower() == "true") else "",
+                    f"--energy_temp_base {args.energy_temp_base}\n" if args.energy_temp_base else "",
+                    f"--energy_temp_alpha {args.energy_temp_alpha}\n" if args.energy_temp_alpha is not None else "",
                     "\n",
                     f"--z_dim {z_dim}\n",
                     f"--lr_G {lr_G}\n",
