@@ -348,6 +348,15 @@ def main():
                     ]
 
 
+            if use_energy_temp:
+                # base tau_0 (try 4/8/20) and adaptivity strength (0 = global T baseline D0, 1 = energy-adaptive D)
+                val_temp_base  = prompt_float("energy_temp_base", "8.0")
+                val_temp_alpha = prompt_float("energy_temp_alpha (0=global T)", "1.0")
+                args += [
+                    "--energy_temp_base", str(val_temp_base),
+                    "--energy_temp_alpha", str(val_temp_alpha)
+                ]
+
             gpu_id = prompt_gpu_id()
             additive_loss = True #prompt_additive_loss()
 
